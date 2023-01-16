@@ -24,7 +24,7 @@ def login_page(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('main')
+            return redirect('signin')
     return render(request, 'main/login.html', context)
 
 
@@ -35,8 +35,8 @@ def sign_in(request):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         login(request, user)
-        return redirect('')
-    return render(request, 'main/sign_in.html', )
+        return redirect('main')
+    return render(request, 'main/sign_in.html')
 
 
 def logout_page(request):
