@@ -57,6 +57,17 @@
               <div class="form-group">
                   <label>Quantity</label>
               </div>
+              <div class="m-bot15"><span class="pro-price">{{ rates }}</span></div>
+              <div class="form-group">
+                  <label>Rating</label>
+              </div>
+              <div>
+                  <form action="" method="post">
+                      {% csrf_token %}
+                      {{ rate_form }}
+                      <button type="submit">rate</button>
+                  </form>
+              </div>
               <p>
                 <a class="btn btn-round btn-danger" type="button" href="{% url 'order' good.id %}">Order</a>
               </p>

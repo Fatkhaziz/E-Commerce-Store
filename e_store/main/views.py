@@ -5,11 +5,22 @@ from .models import Goods, Comment
 from .forms import LoginForm, OrderForm, CommentForm, RateForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .filters import ProductFilter
+from clients.models import Profile
+from . services import claculate_sale
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
 
 def main_page(request):
     goods = Goods.objects.all()
     filter = ProductFilter(request.GET, queryset=goods)
-    goods = filter.qs
+    goods = filter.qs[:3]
+    for good in goods:
+        if good.sale == True:
+            good.price = round(good.price * 0.8)
     context = {'goods': goods, 'filter': filter}
 
     return render(request, 'main/index.html', context)
@@ -50,6 +61,11 @@ def product_detail(request, good_id):
     rates = good.rating_set.all()
     total = 0
     count = 0
+    price = good.price
+    if good.sale == True:
+        good.price = round(good.price * 0.8)
+    else:
+        price = price
     for i in rates:
         total += i.rate
         count += 1
@@ -75,21 +91,39 @@ def product_detail(request, good_id):
     return render(request, 'main/product_detail.html', context)
 
 
+
+
+
 def order(request, good_id):
+    profile = Profile.objects.get(user = request.user)
     good = Goods.objects.get(id = good_id)
     form = OrderForm(initial={'good': good, 'user': request.user})
-    context = {'good': good, 'form': form}
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('main')
+            total_price = good.price * form.cleaned_data['quantity']
+            total_price = claculate_sale(total_price, profile.order_count)
+            if form.cleaned_data['pay_method'] == 'visa':
+                if profile.wallet >= total_price:
+                    profile.wallet -= total_price
+                    profile.order_count += total_price
+                    profile.save()
+                    form.save()
+                    return redirect('main')
+                else:
+                    return HttpResponse('Not enough money')
+            else:
+                profile.order_count += total_price
+                profile.save()
+                form.save()
+                return redirect('main')
+    context = {'good': good, 'form': form}
     return render(request, 'main/checkout.html', context)
 
 
 def product_list(request):
     good = Goods.objects.all()
-    paginator = Paginator(good, 2)
+    paginator = Paginator(good, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {'good': good, 'page_obj': page_obj}

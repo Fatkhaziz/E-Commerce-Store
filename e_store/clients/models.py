@@ -13,6 +13,8 @@ class Profile(models.Model):
     phone = models.IntegerField(max_length=15)
     insta = models.CharField(max_length=50)
     github = models.CharField(max_length=50)
+    order_count = models.PositiveIntegerField(default=0)
+    wallet = models.PositiveIntegerField(default=0)
 
 
     def __str__(self):

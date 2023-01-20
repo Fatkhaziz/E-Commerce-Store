@@ -14,6 +14,7 @@ class Goods(models.Model):
     price = models.PositiveIntegerField()
     category = models.CharField(max_length=30, choices=goods_choices)
     image = models.ImageField(blank=True, null=True)
+    sale = models.BooleanField(default=False)
 
 
     def __str__(self):
@@ -23,8 +24,7 @@ class Goods(models.Model):
 class Order(models.Model):
     p_method = [
         ('Visa', 'Visa'),
-        ('MasterCard', 'MasterCard'),
-        ('PayPal', 'PayPal')
+        ('cash', 'cash')
         ]
 
     name = models.CharField(max_length=10)

@@ -31,6 +31,8 @@
       <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
       <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+
+
    </head>
    <body>
       <!--header section start -->
@@ -65,7 +67,7 @@
                         <a class="nav-link" href="{% url 'product_list' %}">Products</a>
                      </li>
                      <li class="nav-item">
-                        <a class="nav-link" href="clients.html">Client</a>
+                        <a class="nav-link" href="">Client</a>
                      </li>
                      <li class="nav-item">
                         <a class="nav-link" href="contact.html">Contact Us</a>
@@ -93,11 +95,21 @@
                            </div>
                         </div>
 
-                        <div class="button_main"><button class="all_text">All</button><input type="text" class="Enter_text" placeholder="Enter keywords" name=""><button class="search_text">Search</button></div>
+                        <div class="button_main"><button class="all_text">All</button><input type="text" class="Enter_text" placeholder="Enter keywords" name="#"><button class="search_text">Search</button></div>
                          <form action="" method="get">
                            {{ filter.form }}
                            <input type="submit">
                         </form>
+<!--                        <div class="container h-100">-->
+<!--                           <div class="d-flex justify-content-center h-100">-->
+<!--                             <div class="searchbar">-->
+<!--                                 <form action="" method="get">-->
+<!--                                   <input class="search_input" type="text" name="" placeholder="Search...">-->
+<!--                                   <a href="#" class="search_icon"><i class="fas fa-search">{{ filter.form }}</i></a>-->
+<!--                                 </form>-->
+<!--                             </div>-->
+<!--                           </div>-->
+<!--                        </div>-->
                      </div>
 
                   </div>
@@ -374,6 +386,7 @@
       <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
       <script src="{% static '../../assets/js/vendor/popper.min.js' %}"></script>
       <script src="{% static '../../dist/js/bootstrap.min.js' %}"></script>
+
    </body>
 </html>
 
