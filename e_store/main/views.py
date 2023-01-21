@@ -2,16 +2,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Goods, Comment
+from django.contrib.auth.models import User
 from .forms import LoginForm, OrderForm, CommentForm, RateForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .filters import ProductFilter
 from clients.models import Profile
-from . services import claculate_sale
+from .services import claculate_sale
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from .token import account_activation_token
 
 
 def main_page(request):
@@ -34,8 +36,25 @@ def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('signin')
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = "Activation link has been sent to your email address"
+            message = render_to_string("main/acc_activate.html", {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+            return HttpResponse('Please confirm your email address to complete the registration')
+    else:
+        form = LoginForm()
     return render(request, 'main/login.html', context)
 
 
@@ -123,11 +142,28 @@ def order(request, good_id):
 
 def product_list(request):
     good = Goods.objects.all()
-    paginator = Paginator(good, 3)
+    paginator = Paginator(good, 2)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {'good': good, 'page_obj': page_obj}
     return render(request, 'main/product_list.html', context)
+
+
+def activate(reqeust, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return HttpResponse('You have successfully activated your account')
+    else:
+        return HttpResponse('Smth is wrong with activation link')
+
+
+
 
 
 # def products(request):
