@@ -13,7 +13,7 @@ class Goods(models.Model):
     description = models.TextField()
     price = models.PositiveIntegerField()
     category = models.CharField(max_length=30, choices=goods_choices)
-    image = models.ImageField(blank=True, null=True)
+    image = models.ImageField(default='no_image.jpg', blank=True, null=True)
     sale = models.BooleanField(default=False)
 
 
@@ -23,7 +23,7 @@ class Goods(models.Model):
 
 class Order(models.Model):
     p_method = [
-        ('Visa', 'Visa'),
+        ('visa', 'visa'),
         ('cash', 'cash')
         ]
 
@@ -57,7 +57,7 @@ class Rating(models.Model):
     rate = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return f'{self.rate}'
+        return f"{self.good, self.rate}"
 
 
 # class Contact(models.Model):

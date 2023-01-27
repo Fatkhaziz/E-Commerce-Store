@@ -11,10 +11,8 @@
 	<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
      <!-- Add icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 </head>
 <body>
 <div class="container bootdey">
@@ -43,7 +41,7 @@
           <div class="col-md-6">
 
               <h4 class="pro-d-title">
-                  <a href="#" class="">
+                  <a href="" class="">
                       {{ good.name }}
                   </a>
               </h4>
@@ -54,10 +52,19 @@
                   <span class="posted_in"> <strong>Categories:</strong> <a rel="tag" href="#">{{ good.category }}</a></span>
               </div>
               <div class="m-bot15"><span class="pro-price"> ${{ good.price }}</span></div>
-              <div class="form-group">
-                  <label>Quantity</label>
-              </div>
+
+              <p>
+                <a class="btn btn-round btn-danger" type="button" href="{% url 'order' good.id %}">Order</a>
+              </p>
+              <br>
               <div class="m-bot15"><span class="pro-price">{{ rates }}</span></div>
+              <div>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+              </div>
               <div class="form-group">
                   <label>Rating</label>
               </div>
@@ -65,27 +72,19 @@
                   <form action="" method="post">
                       {% csrf_token %}
                       {{ rate_form }}
-                      <button type="submit">rate</button>
+                      <button type="submit">add rating</button>
                   </form>
               </div>
-              <p>
-                <a class="btn btn-round btn-danger" type="button" href="{% url 'order' good.id %}">Order</a>
-              </p>
+              <br>
+              <br>
+
               <div>
                   {% for comment in comment %}
                   <p class="pro-title">{{ comment.text }}</p><br>
                   <p class="pro-title">{{ comment.date }}</p>
                   {% endfor %}
               </div>
-<!--              <div>-->
 
-
-<!--                <span class="fa fa-star checked"></span>-->
-<!--                <span class="fa fa-star checked"></span>-->
-<!--                <span class="fa fa-star checked"></span>-->
-<!--                <span class="fa fa-star"></span>-->
-<!--                <span class="fa fa-star"></span>-->
-<!--              </div>-->
               <div>
                   <form action="" method="post">
                       {% csrf_token %}

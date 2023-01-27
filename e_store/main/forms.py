@@ -15,15 +15,14 @@ class LoginForm(UserCreationForm):
 class OrderForm(ModelForm):
     class Meta:
         model = Order
-        fields = ['name', 'quantity', 'email', 'phone', 'city', 'street', 'house', 'good', 'user']
+        fields = ['name', 'quantity', 'email', 'phone', 'city', 'street', 'house', 'good', 'user', 'pay_method']
 
 
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ['good', 'date', 'text']
+        fields = '__all__'
 
-    # def widgets(self):
 
 class RateForm(ModelForm):
     class Meta:

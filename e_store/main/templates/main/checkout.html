@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block title %}
+Payment
+{% endblock %}
+
 {% block content %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
@@ -42,21 +46,13 @@
           <br>
           <br>
           <span>User</span>  {{ form.user }}
-          <br>
-          <br>
+
           <span>Pay method</span>  {{ form.pay_method }}
           <br>
           <br>
-<!--          <input type="text" class="text" name="name" placeholder="name">-->
-<!--          <input type="text" class="text" name="quantity" placeholder="quantity">-->
-<!--          <input type="text" class="text" name="email" placeholder="email">-->
-<!--          <input type="text" class="text" name="phone" placeholder="phone">-->
-<!--          <input type="text" class="text" name="city" placeholder="city">-->
-<!--          <input type="text" class="text" name="street" placeholder="street">-->
-<!--          <input type="text" class="text" name="house" placeholder="house">-->
-<!--          <input type="text" class="text" name="good" placeholder="good">-->
-<!--          <input type="text" class="text" name="user"placeholder="user">-->
-<!--          <input type="text" class="text" name="pay_method" placeholder="pay_method">-->
+          <br>
+          <button type="submit" class="btn btn-primary w-100 mt-2">Place order</button>
+        </form>
       </div>
     </div>
   </div>
@@ -65,15 +61,6 @@
         <div class="card position-sticky top-0">
           <div class="p-3 bg-light bg-opacity-10">
             <h6 class="card-title mb-3">Order Summary</h6>
-            <div class="d-flex justify-content-between mb-1 small">
-<!--              <span>Subtotal</span> <span>$214.50</span>-->
-            </div>
-            <div class="d-flex justify-content-between mb-1 small">
-<!--              <span>Shipping</span> <span>$20.00</span>-->
-            </div>
-            <div class="d-flex justify-content-between mb-1 small">
-<!--              <span>Coupon (Code: NEWYEAR)</span> <span class="text-danger">-$10.00</span>-->
-            </div>
             <hr>
             <div class="d-flex justify-content-between mb-4 small">
               <span>TOTAL</span> <strong class="text-dark">${{ good.price }}</strong>
@@ -90,7 +77,7 @@
                 Get emails about product updates and events. If you change your mind, you can unsubscribe at any time. <a href="#">Privacy Policy</a>
               </label>
             </div>
-            <button type="submit" class="btn btn-primary w-100 mt-2">Заказать</button>
+
             </form>
           </div>
         </div>

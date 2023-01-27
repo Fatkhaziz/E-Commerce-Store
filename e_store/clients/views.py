@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import Profile
-from .forms import Profile, ProfileForm
+from .forms import ProfileForm
 
 
 def profile(request, user_id):
-    profile = Profile.objects.get(id = user_id)
+    profile = Profile.objects.get(id=user_id)
     context = {'profile': profile}
     return render(request, 'clients/profile.html', context)
 
@@ -27,6 +27,7 @@ def update_profile(request):
         form = ProfileForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
+            return redirect('main')
     context = {'form': form}
     return render(request, 'clients/update_profile.html', context)
 

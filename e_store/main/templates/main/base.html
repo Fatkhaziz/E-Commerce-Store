@@ -31,6 +31,8 @@
       <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
       <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+      {% block link %}
+      {% endblock %}
    </head>
    <body>
       <!--header section start -->
@@ -41,13 +43,16 @@
                <div class="search_section">
                   <ul>
                      {% if request.user.is_authenticated %}
-                     <li><a href="{% url 'profile' user.id %}">Welcome {{ request.user }}</a></li>
-                     <li><a href="{% url 'logout' %}">Log Out</a></li>
+                        {% if request.user.profile.id %}
+                        <li><a href="{% url 'profile' user.id %}">Welcome {{ request.user }}</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                        {% else %}
+                        <li><a href="{% url 'create_profile' %}">Welcome {{ request.user }}</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                        {% endif %}
                      {% else %}
-                     <li><a href="{% url 'signin' %}">Log In</a></li>
+                     <li><a href="{% url 'login' %}">Log In</a></li>
                      {% endif %}
-                     <li><a href="#"><img src="{% static 'images/shopping-bag.png' %}"></a></li>
-                     <li><a href="#"><img src="{% static 'images/search-icon.png' %}"></a></li>
                   </ul>
                </div>
                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample01" aria-controls="navbarsExample01" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,23 +63,22 @@
                      <li class="nav-item active">
                         <a class="nav-link" href="{% url 'main' %}">Home</a>
                      </li>
-<!--                     <li class="nav-item">-->
-<!--                        <a class="nav-link" href="category.html">Category</a>-->
-<!--                     </li>-->
-<!--                     <li class="nav-item">-->
-<!--                        <a class="nav-link" href="{% url 'product_list' %}">Products</a>-->
-<!--                     </li>-->
-<!--                     <li class="nav-item">-->
-<!--                        <a class="nav-link" href="clients.html">Client</a>-->
-<!--                     </li>-->
-<!--                     <li class="nav-item">-->
-<!--                        <a class="nav-link" href="contact.html">Contact Us</a>-->
-<!--                     </li>-->
+                     <li class="nav-item">
+                        <a class="nav-link" href="category.html">Category</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'product_list' %}">Products</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="">Client</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact Us</a>
+                     </li>
                   </ul>
                </div>
             </nav>
          </div>
-      </div>
 
 
       {% block content %}
@@ -85,20 +89,19 @@
          <div class="container">
             <div class="row">
                <div class="col-lg-6 col-sm-12">
-                  <h4 class="information_text">Category</h4>
-                  <p class="dummy_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim </p>
+                  <h4 class="information_text">Media Division</h4>
+                  <p class="dummy_text">We are the largest camera suppliers in Central Asia</p>
                </div>
                <div class="col-lg-3 col-sm-6">
                   <div class="information_main">
                      <h4 class="information_text">Useful Links</h4>
-                     <p class="many_text">Contrary to popular belief, Lorem Ipsum is not simply random text. It </p>
+                     <p class="many_text">telegram/instagram: @mediadivision</p>
                   </div>
                </div>
                <div class="col-lg-3 col-sm-6">
                   <div class="information_main">
                      <h4 class="information_text">Contact Us</h4>
-                     <p class="call_text"><a href="#">+01 1234567890</a></p>
-                     <p class="call_text"><a href="#">+01 9876543210</a></p>
+                     <p class="call_text"><a href="#"></a></p>
                      <p class="call_text"><a href="#">demo@gmail.com</a></p>
                      <div class="social_icon">
                         <ul>
@@ -113,9 +116,10 @@
             </div>
             <div class="copyright_section">
                <h1 class="copyright_text">
-                  Copyright 2020 All Right Reserved <a href="https://html.design"> Free Html Templates</a></h1>
+                  Copyright 2020 All Right Reserved <a href="https://html.design">by Fatkhaziz Mukhamedov</a></h1>
             </div>
          </div>
+      </div>
       </div>
       <!-- footer section end -->
    </body>

@@ -7,13 +7,13 @@ from .forms import LoginForm, OrderForm, CommentForm, RateForm
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .filters import ProductFilter
 from clients.models import Profile
-from .services import claculate_sale
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .token import account_activation_token
+from .services import average_rate
 
 
 def main_page(request):
@@ -75,34 +75,24 @@ def logout_page(request):
 
 
 def product_detail(request, good_id):
-    good = Goods.objects.get(id = good_id)
+    good = Goods.objects.get(id=good_id)
     comment = good.comment_set.all()
     rates = good.rating_set.all()
-    total = 0
-    count = 0
-    price = good.price
     if good.sale == True:
         good.price = round(good.price * 0.8)
-    else:
-        price = price
-    for i in rates:
-        total += i.rate
-        count += 1
-    if count == 0:
-        result = 'No Rating'
-    else:
-        result = round(total / count)
-    form = CommentForm(initial={'good': good})
-    rate_form = RateForm(initial={'good': good, 'user': request.user})
-    if request.method == "POST":
-        rate_form = RateForm(request.user)
-        if rate_form.is_valid():
-            if  1 <= rate_form.cleaned_data['rate'] <= 5:
-                rate_form.save()
-            else:
-                return HttpResponse('Maximum value should be 5')
+    result = average_rate(rates)
+    rate_form = RateForm(initial={'good':good, 'user': request.user})
     if request.method == 'POST':
-        form = CommentForm(request.POST, initial={'good': good})
+        rate_form = RateForm(request.POST)
+        if rate_form.is_valid():
+            if 1 <= rate_form.cleaned_data['rate'] <= 5:
+                rate_form.save()
+                return redirect(request.META['HTTP_REFERER'])
+            else:
+                return HttpResponse("you can't do it")
+    form = CommentForm(initial={'good': good})
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
         if form.is_valid():
             form.good = good
             form.save()
@@ -110,18 +100,25 @@ def product_detail(request, good_id):
     return render(request, 'main/product_detail.html', context)
 
 
-
+def calculate_sale(count, total_price):
+    if 100000 <= count <= 150000:
+        total_price = round(total_price * 0.9)
+    elif 150000 < count <= 200000:
+        total_price = round(total_price * 0.85)
+    elif 200000 < count:
+        total_price = round(total_price * 0.8)
+    return total_price
 
 
 def order(request, good_id):
-    profile = Profile.objects.get(user = request.user)
-    good = Goods.objects.get(id = good_id)
+    profile = Profile.objects.get(user=request.user)
+    good = Goods.objects.get(id=good_id)
     form = OrderForm(initial={'good': good, 'user': request.user})
-    if request.method == "POST":
+    if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             total_price = good.price * form.cleaned_data['quantity']
-            total_price = claculate_sale(total_price, profile.order_count)
+            total_price = calculate_sale(profile.order_count, total_price)
             if form.cleaned_data['pay_method'] == 'visa':
                 if profile.wallet >= total_price:
                     profile.wallet -= total_price
@@ -130,7 +127,7 @@ def order(request, good_id):
                     form.save()
                     return redirect('main')
                 else:
-                    return HttpResponse('Not enough money')
+                    return HttpResponse('not enough money')
             else:
                 profile.order_count += total_price
                 profile.save()
